@@ -22,6 +22,9 @@ LOCAL_MODULE_TAGS := tests
 
 LOCAL_SRC_FILES := $(call all-subdir-java-files)
 
+# TODO (b/115657480): Disable WifiCountryCodeTest.java until it is updated
+LOCAL_SRC_FILES := $(filter-out src/com/android/server/wifi/WifiCountryCodeTest.java,$(LOCAL_SRC_FILES))
+
 # Provide jack a list of classes to exclude form code coverage
 # This list is generated from the java source files in this module
 # The list is a comma separated list of class names with * matching zero or more characters.
@@ -55,7 +58,7 @@ LOCAL_JACK_FLAGS := --multi-dex native
 # since neither is declared a static java library.
 LOCAL_STATIC_JAVA_LIBRARIES := \
 	android-support-test \
-	mockito-target-minus-junit4 \
+	mockito-target-extended-minus-junit4 \
 	frameworks-base-testutils \
 	services \
 	wifi-service \
@@ -104,6 +107,8 @@ LOCAL_JNI_SHARED_LIBRARIES := \
 	libunwindstack \
 	libutils \
 	libvndksupport \
+	libdexmakerjvmtiagent \
+	libstaticjvmtiagent
 
 ifdef WPA_SUPPLICANT_VERSION
 LOCAL_JNI_SHARED_LIBRARIES += libwpa_client

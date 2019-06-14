@@ -478,23 +478,6 @@ public class WifiNetworkFactory extends NetworkFactory {
         return false;
     }
 
-    boolean isRequestWithNetworkSpecifierValid(NetworkRequest networkRequest) {
-        NetworkSpecifier ns = networkRequest.networkCapabilities.getNetworkSpecifier();
-        // Invalid network specifier.
-        if (!(ns instanceof WifiNetworkSpecifier)) {
-            Log.e(TAG, "Invalid network specifier mentioned. Rejecting");
-            return false;
-        }
-        // Request cannot have internet capability since such a request can never be fulfilled.
-        // (NetworkAgent for connection with WifiNetworkSpecifier will not have internet capability)
-        if (networkRequest.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)) {
-            Log.e(TAG, "Request with wifi network specifier cannot contain "
-                    + "NET_CAPABILITY_INTERNET. Rejecting");
-            return false;
-        }
-        return true;
-    }
-
     /**
      * Check whether to accept the new network connection request.
      *
@@ -503,11 +486,13 @@ public class WifiNetworkFactory extends NetworkFactory {
     @Override
     public boolean acceptRequest(NetworkRequest networkRequest, int score) {
         NetworkSpecifier ns = networkRequest.networkCapabilities.getNetworkSpecifier();
+        // Generic wifi request. Always accept.
         if (ns == null) {
             // Generic wifi request. Always accept.
         } else {
-            // Invalid request with network specifier.
-            if (!isRequestWithNetworkSpecifierValid(networkRequest)) {
+            // Invalid network specifier.
+            if (!(ns instanceof WifiNetworkSpecifier)) {
+                Log.e(TAG, "Invalid network specifier mentioned. Rejecting");
                 releaseRequestAsUnfulfillableByAnyFactory(networkRequest);
                 return false;
             }
@@ -584,8 +569,9 @@ public class WifiNetworkFactory extends NetworkFactory {
                 mWifiConnectivityManager.setTrustedConnectionAllowed(true);
             }
         } else {
-            // Invalid request with network specifier.
-            if (!isRequestWithNetworkSpecifierValid(networkRequest)) {
+            // Invalid network specifier.
+            if (!(ns instanceof WifiNetworkSpecifier)) {
+                Log.e(TAG, "Invalid network specifier mentioned. Rejecting");
                 releaseRequestAsUnfulfillableByAnyFactory(networkRequest);
                 return;
             }

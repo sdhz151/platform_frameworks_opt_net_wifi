@@ -798,13 +798,6 @@ public class WifiServiceImpl extends BaseWifiService {
                 || checkNetworkManagedProvisioningPermission(pid, uid);
     }
 
-    // Helper method to check if the entity initiating the binder call has setup wizard or settings
-    // permissions.
-    private boolean isSettingsOrSuw(int pid, int uid) {
-        return checkNetworkSettingsPermission(pid, uid)
-                || checkNetworkSetupWizardPermission(pid, uid);
-    }
-
     // Helper method to check if the entity initiating the binder call is a system app.
     private boolean isSystem(String packageName) {
         long ident = Binder.clearCallingIdentity();
@@ -2041,7 +2034,10 @@ public class WifiServiceImpl extends BaseWifiService {
     @Override
     public Map<String, Map<Integer, List<ScanResult>>> getAllMatchingFqdnsForScanResults(
             List<ScanResult> scanResults) {
-        if (!isSettingsOrSuw(Binder.getCallingPid(), Binder.getCallingUid())) {
+        if ((mContext.checkCallingOrSelfPermission(android.Manifest.permission.NETWORK_SETTINGS)
+                != PERMISSION_GRANTED)
+                && (mContext.checkSelfPermission(android.Manifest.permission.NETWORK_SETUP_WIZARD)
+                != PERMISSION_GRANTED)) {
             throw new SecurityException(TAG + ": Permission denied");
         }
         if (mVerboseLoggingEnabled) {
@@ -2063,7 +2059,10 @@ public class WifiServiceImpl extends BaseWifiService {
     @Override
     public Map<OsuProvider, List<ScanResult>> getMatchingOsuProviders(
             List<ScanResult> scanResults) {
-        if (!isSettingsOrSuw(Binder.getCallingPid(), Binder.getCallingUid())) {
+        if ((mContext.checkCallingOrSelfPermission(android.Manifest.permission.NETWORK_SETTINGS)
+                != PERMISSION_GRANTED)
+                && (mContext.checkSelfPermission(android.Manifest.permission.NETWORK_SETUP_WIZARD)
+                != PERMISSION_GRANTED)) {
             throw new SecurityException(TAG + ": Permission denied");
         }
         if (mVerboseLoggingEnabled) {
@@ -2084,7 +2083,10 @@ public class WifiServiceImpl extends BaseWifiService {
     @Override
     public Map<OsuProvider, PasspointConfiguration> getMatchingPasspointConfigsForOsuProviders(
             List<OsuProvider> osuProviders) {
-        if (!isSettingsOrSuw(Binder.getCallingPid(), Binder.getCallingUid())) {
+        if ((mContext.checkCallingOrSelfPermission(android.Manifest.permission.NETWORK_SETTINGS)
+                != PERMISSION_GRANTED)
+                && (mContext.checkSelfPermission(android.Manifest.permission.NETWORK_SETUP_WIZARD)
+                != PERMISSION_GRANTED)) {
             throw new SecurityException(TAG + ": Permission denied");
         }
         if (mVerboseLoggingEnabled) {
@@ -2113,7 +2115,10 @@ public class WifiServiceImpl extends BaseWifiService {
      */
     @Override
     public List<WifiConfiguration> getWifiConfigsForPasspointProfiles(List<String> fqdnList) {
-        if (!isSettingsOrSuw(Binder.getCallingPid(), Binder.getCallingUid())) {
+        if ((mContext.checkCallingOrSelfPermission(android.Manifest.permission.NETWORK_SETTINGS)
+                != PERMISSION_GRANTED)
+                && (mContext.checkSelfPermission(android.Manifest.permission.NETWORK_SETUP_WIZARD)
+                != PERMISSION_GRANTED)) {
             throw new SecurityException(TAG + ": Permission denied");
         }
         if (mVerboseLoggingEnabled) {
@@ -3248,7 +3253,10 @@ public class WifiServiceImpl extends BaseWifiService {
         if (callback == null) {
             throw new IllegalArgumentException("Callback must not be null");
         }
-        if (!isSettingsOrSuw(Binder.getCallingPid(), Binder.getCallingUid())) {
+        if ((mContext.checkCallingOrSelfPermission(android.Manifest.permission.NETWORK_SETTINGS)
+                != PERMISSION_GRANTED)
+                && (mContext.checkSelfPermission(android.Manifest.permission.NETWORK_SETUP_WIZARD)
+                != PERMISSION_GRANTED)) {
             throw new SecurityException(TAG + ": Permission denied");
         }
         if (!mContext.getPackageManager().hasSystemFeature(
@@ -3541,7 +3549,10 @@ public class WifiServiceImpl extends BaseWifiService {
 
         final int uid = getMockableCallingUid();
 
-        if (!isSettingsOrSuw(Binder.getCallingPid(), Binder.getCallingUid())) {
+        if ((mContext.checkCallingOrSelfPermission(android.Manifest.permission.NETWORK_SETTINGS)
+                != PERMISSION_GRANTED)
+                && (mContext.checkSelfPermission(android.Manifest.permission.NETWORK_SETUP_WIZARD)
+                != PERMISSION_GRANTED)) {
             throw new SecurityException(TAG + ": Permission denied");
         }
 
@@ -3575,7 +3586,10 @@ public class WifiServiceImpl extends BaseWifiService {
 
         final int uid = getMockableCallingUid();
 
-        if (!isSettingsOrSuw(Binder.getCallingPid(), Binder.getCallingUid())) {
+        if ((mContext.checkCallingOrSelfPermission(android.Manifest.permission.NETWORK_SETTINGS)
+                != PERMISSION_GRANTED)
+                && (mContext.checkSelfPermission(android.Manifest.permission.NETWORK_SETUP_WIZARD)
+                != PERMISSION_GRANTED)) {
             throw new SecurityException(TAG + ": Permission denied");
         }
 
@@ -3589,7 +3603,10 @@ public class WifiServiceImpl extends BaseWifiService {
      */
     @Override
     public void stopDppSession() throws android.os.RemoteException {
-        if (!isSettingsOrSuw(Binder.getCallingPid(), Binder.getCallingUid())) {
+        if ((mContext.checkCallingOrSelfPermission(android.Manifest.permission.NETWORK_SETTINGS)
+                != PERMISSION_GRANTED)
+                && (mContext.checkSelfPermission(android.Manifest.permission.NETWORK_SETUP_WIZARD)
+                != PERMISSION_GRANTED)) {
             throw new SecurityException(TAG + ": Permission denied");
         }
         final int uid = getMockableCallingUid();
